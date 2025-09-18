@@ -261,34 +261,44 @@
                         
                         <div>
                             <h3 class="text-xl font-semibold mb-4 text-notary-blue">Quick Contact Form</h3>
-                            <form class="space-y-4">
+                            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-4" id="contact-form">
+                                <!-- Hidden fields for Formspree -->
+                                <input type="hidden" name="_subject" value="New Contact Form Submission - Chambers Notary">
+                                <input type="hidden" name="_next" value="thank-you.html">
+                                <input type="hidden" name="_captcha" value="false">
+
+                                <!-- Honeypot for spam protection -->
+                                <input type="text" name="_gotcha" style="display:none">
+
                                 <div>
-                                    <label class="block text-gray-700 font-medium mb-2">Name</label>
-                                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="Your full name">
+                                    <label for="name" class="block text-gray-700 font-medium mb-2">Name *</label>
+                                    <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="Your full name">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-medium mb-2">Email</label>
-                                    <input type="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="your.email@example.com">
+                                    <label for="email" class="block text-gray-700 font-medium mb-2">Email *</label>
+                                    <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="your.email@example.com">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-medium mb-2">Phone</label>
-                                    <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="(501) 555-0123">
+                                    <label for="phone" class="block text-gray-700 font-medium mb-2">Phone</label>
+                                    <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="(501) 555-0123">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-medium mb-2">Service Needed</label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue">
-                                        <option>Document Notarization</option>
-                                        <option>Identity Verification</option>
-                                        <option>Mobile Notary Service</option>
-                                        <option>Other</option>
+                                    <label for="service" class="block text-gray-700 font-medium mb-2">Service Needed</label>
+                                    <select id="service" name="service" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue">
+                                        <option value="">Select a service...</option>
+                                        <option value="Document Notarization">Document Notarization</option>
+                                        <option value="Identity Verification">Identity Verification</option>
+                                        <option value="Mobile Notary Service">Mobile Notary Service</option>
+                                        <option value="Other">Other</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-medium mb-2">Message</label>
-                                    <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="Please describe your notarization needs..."></textarea>
+                                    <label for="message" class="block text-gray-700 font-medium mb-2">Message *</label>
+                                    <textarea id="message" name="message" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-notary-blue" placeholder="Please describe your notarization needs..."></textarea>
                                 </div>
-                                <button type="submit" class="w-full bg-notary-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                                    Send Message
+                                <button type="submit" id="submit-btn" class="w-full bg-notary-blue text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed">
+                                    <span class="submit-text">Send Message</span>
+                                    <span class="loading-text hidden">Sending...</span>
                                 </button>
                                 <p class="text-xs text-gray-500 mt-2 text-center">
                                     By submitting this form, you agree to our <a href="privacy-policy.html" class="text-notary-blue hover:underline">Privacy Policy</a>
@@ -339,8 +349,49 @@
         </div>
     </footer>
 
-    <!-- Smooth scrolling script -->
+    <!-- Form validation and smooth scrolling script -->
     <script>
+        // Contact form validation
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = submitBtn.querySelector('.submit-text');
+            const loadingText = submitBtn.querySelector('.loading-text');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitText.classList.add('hidden');
+            loadingText.classList.remove('hidden');
+
+            // Basic client-side validation
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+
+            if (!name || !email || !message) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+
+                // Reset button state
+                submitBtn.disabled = false;
+                submitText.classList.remove('hidden');
+                loadingText.classList.add('hidden');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                e.preventDefault();
+                alert('Please enter a valid email address.');
+
+                // Reset button state
+                submitBtn.disabled = false;
+                submitText.classList.remove('hidden');
+                loadingText.classList.add('hidden');
+                return;
+            }
+        });
+
         // Enable smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
