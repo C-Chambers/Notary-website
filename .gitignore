@@ -33,3 +33,6 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Planning and internal documentation
+IMPROVEMENT_PLAN.md
