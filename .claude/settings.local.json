@@ -2,7 +2,20 @@
   "permissions": {
     "allow": [
       "*",
-      "WebSearch"
+      "WebSearch",
+      "Read(//g//**)",
+      "Bash(find:*)",
+      "WebFetch(domain:www.chambersnotary.com)",
+      "Bash(git checkout:*)",
+      "WebFetch(domain:cdn.tailwindcss.com)",
+      "WebFetch(domain:unpkg.com)",
+      "WebFetch(domain:cdnjs.com)",
+      "WebFetch(domain:cdnjs.cloudflare.com)",
+      "WebFetch(domain:tailkits.com)",
+      "Bash(git commit:*)",
+      "Bash(git merge:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
