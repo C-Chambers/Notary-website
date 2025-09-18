@@ -34,10 +34,9 @@ This is a single-page website for "Chambers Notary," a professional notary publi
 - **Hours**: Mon-Fri 8 AM - 8 PM, Weekends by appointment
 - **Pricing**: $10/signature, $25 mobile service fee
 
-### Contact Information (Currently Placeholder)
-- **Phone**: (555) 555-5555
-- **Email**: [Not provided in current version]
-- **Service Area**: Little Rock & surrounding areas
+### Contact Information
+- **Email**: contact@chambersnotary.com
+- **Service Area**: Conway & surrounding areas
 
 ## Website Structure (index.html)
 
