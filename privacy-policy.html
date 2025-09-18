@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy | Conway Notary Pro</title>
     <meta name="description" content="Privacy policy for Conway Notary Pro notary services. Learn how we protect your personal information.">
-    
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
     <!-- Tailwind CSS CDN - Latest Version -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -157,7 +164,7 @@
                             </p>
                             <div class="bg-slate-50 p-4 rounded-lg">
                                 <p class="text-gray-700 mb-2"><strong>Conway Notary Pro</strong></p>
-                                <p class="text-gray-700 mb-2">Email: contact@chambersnotary.com</p>
+                                <p class="text-gray-700 mb-2">Email: <a href="#" onclick="revealEmail(this, 'Y29udGFjdEBjaGFtYmVyc25vdGFyeS5jb20=')" class="hover:text-notary-blue transition-colors cursor-pointer">Click to show email</a></p>
                                 <p class="text-gray-700">Service Area: Conway, Arkansas and surrounding areas</p>
                             </div>
                         </section>
@@ -198,7 +205,7 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
                     <div class="space-y-2">
-                        <p class="text-gray-300">📧 contact@chambersnotary.com</p>
+                        <p class="text-gray-300">📧 <a href="#" onclick="revealEmail(this, 'Y29udGFjdEBjaGFtYmVyc25vdGFyeS5jb20=')" class="hover:text-white transition-colors cursor-pointer">Click to show email</a></p>
                         <p class="text-gray-300">📍 Conway, AR</p>
                         <p class="text-gray-300">🕒 Mon-Fri: 8 AM - 8 PM, Weekends: By Appointment</p>
                     </div>
@@ -210,5 +217,20 @@
             </div>
         </div>
     </footer>
+
+    <!-- Email obfuscation script -->
+    <script>
+        // Email obfuscation function
+        function revealEmail(element, encodedEmail) {
+            try {
+                const email = atob(encodedEmail);
+                element.textContent = email;
+                element.href = 'mailto:' + email;
+                element.onclick = null; // Remove onclick to prevent multiple clicks
+            } catch (e) {
+                element.textContent = 'Email address unavailable';
+            }
+        }
+    </script>
 </body>
 </html>

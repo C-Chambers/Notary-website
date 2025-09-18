@@ -113,3 +113,4 @@ When making changes:
 - [ ] Verify privacy policy links work
 - [ ] Check business hours display correctly
 - [ ] Ensure all placeholder content is appropriate
+- When creating new features or modifying existing ones, always do so on a new branch. Commit and push changes, but do not merge without my approval

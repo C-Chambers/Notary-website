@@ -6,7 +6,14 @@
     <title>Kaitlyn | Notary Public in Conway, AR</title>
     <meta name="description" content="Professional notary public services in Conway, Arkansas. Kaitlyn provides reliable, efficient notarization services for all your legal document needs.">
     <meta name="keywords" content="notary public, Conway, Arkansas, notarization, legal documents, mobile notary">
-    
+
+    <!-- Security Headers -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; img-src 'self' data: https:; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; frame-ancestors 'none'; base-uri 'self'; object-src 'none';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
     <!-- Tailwind CSS CDN - Latest Version -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -225,7 +232,9 @@
                                     <div class="bg-notary-blue text-white rounded-full w-10 h-10 flex items-center justify-center mr-4">📧</div>
                                     <div>
                                         <h4 class="font-semibold">Email</h4>
-                                        <p class="text-gray-600">contact@chambersnotary.com</p>
+                                        <p class="text-gray-600">
+                                            <a href="#" onclick="revealEmail(this, 'Y29udGFjdEBjaGFtYmVyc25vdGFyeS5jb20=')" class="hover:text-notary-blue transition-colors cursor-pointer">Click to show email</a>
+                                        </p>
                                     </div>
                                 </div>
                                 
@@ -328,7 +337,7 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
                     <div class="space-y-2">
-                        <p class="text-gray-300">📧 contact@chambersnotary.com</p>
+                        <p class="text-gray-300">📧 <a href="#" onclick="revealEmail(this, 'Y29udGFjdEBjaGFtYmVyc25vdGFyeS5jb20=')" class="hover:text-white transition-colors cursor-pointer">Click to show email</a></p>
                         <p class="text-gray-300">📍 Conway, AR</p>
                         <p class="text-gray-300">🕒 Mon-Fri: 8 AM - 8 PM, Weekends: By Appointment</p>
                     </div>
@@ -341,47 +350,166 @@
         </div>
     </footer>
 
-    <!-- Form validation and smooth scrolling script -->
+    <!-- Enhanced form validation and security script -->
     <script>
+        // Input sanitization function
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            // Remove HTML tags and dangerous characters
+            return input.replace(/[<>]/g, '')
+                       .replace(/javascript:/gi, '')
+                       .replace(/on\w+\s*=/gi, '')
+                       .trim();
+        }
+
+        // Enhanced validation functions
+        function validateName(name) {
+            const sanitized = sanitizeInput(name);
+            if (sanitized.length < 2 || sanitized.length > 100) return false;
+            // Allow letters, spaces, hyphens, apostrophes
+            return /^[a-zA-Z\s\-']+$/.test(sanitized);
+        }
+
+        function validateEmail(email) {
+            const sanitized = sanitizeInput(email);
+            if (sanitized.length > 254) return false;
+            // Enhanced email validation
+            const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+            return emailRegex.test(sanitized);
+        }
+
+        function validatePhone(phone) {
+            if (!phone) return true; // Optional field
+            const sanitized = sanitizeInput(phone);
+            if (sanitized.length === 0) return true;
+            // Allow US phone number formats
+            const phoneRegex = /^\+?1?[-.\s]?\(?[0-9]{3}\)?[-.\s]?[0-9]{3}[-.\s]?[0-9]{4}$/;
+            return phoneRegex.test(sanitized);
+        }
+
+        function validateMessage(message) {
+            const sanitized = sanitizeInput(message);
+            return sanitized.length >= 10 && sanitized.length <= 2000;
+        }
+
+        // Show error message function
+        function showError(message) {
+            // Remove any existing error messages
+            const existingError = document.querySelector('.form-error');
+            if (existingError) existingError.remove();
+
+            // Create error message element
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'form-error bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+            errorDiv.textContent = message;
+
+            // Insert before form
+            const form = document.getElementById('contact-form');
+            form.parentNode.insertBefore(errorDiv, form);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (errorDiv.parentNode) errorDiv.remove();
+            }, 5000);
+        }
+
+        // Email obfuscation function
+        function revealEmail(element, encodedEmail) {
+            try {
+                const email = atob(encodedEmail);
+                element.textContent = email;
+                element.href = 'mailto:' + email;
+                element.onclick = null; // Remove onclick to prevent multiple clicks
+            } catch (e) {
+                element.textContent = 'Email address unavailable';
+            }
+        }
+
+        // Rate limiting variables
+        let lastSubmissionTime = 0;
+        const RATE_LIMIT_MS = 30000; // 30 seconds between submissions
+
+        // Reset button state function
+        function resetButtonState() {
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = submitBtn.querySelector('.submit-text');
+            const loadingText = submitBtn.querySelector('.loading-text');
+            submitBtn.disabled = false;
+            submitText.classList.remove('hidden');
+            loadingText.classList.add('hidden');
+        }
+
         // Contact form validation
         document.getElementById('contact-form').addEventListener('submit', function(e) {
             const submitBtn = document.getElementById('submit-btn');
             const submitText = submitBtn.querySelector('.submit-text');
             const loadingText = submitBtn.querySelector('.loading-text');
 
+            // Rate limiting check
+            const currentTime = Date.now();
+            if (currentTime - lastSubmissionTime < RATE_LIMIT_MS) {
+                e.preventDefault();
+                showError('Please wait 30 seconds between form submissions.');
+                return;
+            }
+
             // Show loading state
             submitBtn.disabled = true;
             submitText.classList.add('hidden');
             loadingText.classList.remove('hidden');
 
-            // Basic client-side validation
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
+            // Get and sanitize form values
+            const name = sanitizeInput(document.getElementById('name').value);
+            const email = sanitizeInput(document.getElementById('email').value);
+            const phone = sanitizeInput(document.getElementById('phone').value);
+            const message = sanitizeInput(document.getElementById('message').value);
 
+            // Validation checks
             if (!name || !email || !message) {
                 e.preventDefault();
-                alert('Please fill in all required fields.');
-
-                // Reset button state
-                submitBtn.disabled = false;
-                submitText.classList.remove('hidden');
-                loadingText.classList.add('hidden');
+                showError('Please fill in all required fields.');
+                resetButtonState();
                 return;
             }
 
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
+            if (!validateName(name)) {
                 e.preventDefault();
-                alert('Please enter a valid email address.');
-
-                // Reset button state
-                submitBtn.disabled = false;
-                submitText.classList.remove('hidden');
-                loadingText.classList.add('hidden');
+                showError('Please enter a valid name (2-100 characters, letters only).');
+                resetButtonState();
                 return;
             }
+
+            if (!validateEmail(email)) {
+                e.preventDefault();
+                showError('Please enter a valid email address.');
+                resetButtonState();
+                return;
+            }
+
+            if (!validatePhone(phone)) {
+                e.preventDefault();
+                showError('Please enter a valid phone number or leave blank.');
+                resetButtonState();
+                return;
+            }
+
+            if (!validateMessage(message)) {
+                e.preventDefault();
+                showError('Message must be between 10 and 2000 characters.');
+                resetButtonState();
+                return;
+            }
+
+            // Update form values with sanitized versions
+            document.getElementById('name').value = name;
+            document.getElementById('email').value = email;
+            document.getElementById('phone').value = phone;
+            document.getElementById('message').value = message;
+
+            // Set submission time for rate limiting
+            lastSubmissionTime = currentTime;
+
+            // Form is valid, allow submission to proceed
         });
 
         // Enable smooth scrolling for anchor links
