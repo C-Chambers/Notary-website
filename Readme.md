@@ -1,6 +1,6 @@
-# Chambers Notary | Professional Notary Services in Conway, AR
+# Professional Notary Website Template
 
-A secure, professional website for Chambers Notary, providing notary public services in Conway, Arkansas and surrounding areas.
+A secure, professional website template for notary public services with comprehensive security and SEO optimization.
 
 ## Features
 
@@ -47,7 +47,6 @@ To deploy this website to GitHub Pages:
 4. **Access your website**:
    - Your site will be available at: `https://yourusername.github.io/notary-website`
    - For custom domains, add a CNAME file with your domain
-   - Current live site: `https://www.chambersnotary.com`
    - It may take a few minutes for the site to be live
 
 ## Customization
